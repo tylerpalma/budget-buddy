@@ -91,6 +91,8 @@ keystone.set('nav', {
 	'users': 'users'
 });
 
+keystone.set('port', 3001);
+
 // Start Keystone to connect to your database and initialise the web server
 
 keystone.start();
