@@ -1,0 +1,65 @@
+extends ../layouts/default
+
+block content
+	.container
+		.row
+			.col-xs-12
+				.well
+					if expenseSubmitted
+						h3 Expense added successfully.
+					else
+						.row
+							form.form-inline(method='post')
+								input(type='hidden', name='action', value='addExpense')
+								input(type='hidden', name='user', value='#{ user.name.first }')
+								.form-group.col-md-4(class=validationErrors.store ? 'has-error' : null)
+									label.sr-only Store/Service
+									input(type='text', name='store', value=formData.store, placeholder='Store/Service').form-control
+								.form-group.col-md-4(class=validationErrors.memo ? 'has-error' : null)
+									label.sr-only Memo
+									input(type='text', name='memo', value=formData.memo, placeholder='Memo').form-control
+								.form-group.col-md-2(class=validationErrors.cost ? 'has-error' : null)
+									label.sr-only Cost
+									.input-group
+										.input-group-addon $
+										input(type='number', name='cost', value=formData.cost, placeholder='0.00', min='0.00', step='0.01').form-control
+								.form-actions.col-md-2
+									button(type='submit').btn.btn-primary Add Expense
+
+	.container
+		.row
+			.col-xs-12
+				table.table.table-striped
+					thead
+						tr
+							th Name
+							th Store/Service
+							th Memo
+							th Cost
+							th Date
+							th
+					if expenses.length > 0
+						each expense in expenses
+							tr
+								td= expense.user
+								td= expense.store
+								td= expense.memo
+								td= '$' + expense.cost
+								td= expense._.createdAt.format('MMM Do h:mm a')
+								td
+									if expense.user == user.name.first
+										form(method="post")
+											input(type="hidden" name='action', value='removeExpense')
+											input(type="hidden" name='removeId' value="#{ expense._id }")
+											button(type="submit").btn-delete: i.fa.fa-trash
+					else
+						tr
+							td(colspan='6'): p.text-center No expense items found.
+			.col-sm-4.col-sm-offset-8
+				table.table.table-striped
+					tr
+						td: strong Total
+						td= '$' + total
+					tr
+						td: strong Split
+						td= '$' + (total / 2)
