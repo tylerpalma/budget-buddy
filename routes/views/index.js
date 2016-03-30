@@ -20,11 +20,34 @@ exports = module.exports = function(req, res) {
 			.sort('-createdAt')
 			.exec(function (err, expenses) {
 				var total = 0;
+
 				locals.expenses = expenses;
 				_.each(expenses, function (expense) {
 					total = total + expense.cost;
 				});
-				locals.total = total;
+
+				locals.totals = {
+					all: total,
+					individual: _.chain(expenses).groupBy('user').map(function (user, key) {
+						return {
+							user: key,
+							total: _.reduce(user, function (m, x) {
+								return m + x.cost;
+							}, 0)
+						};
+					}).value()
+				};
+
+				locals.spentMore = _.max(locals.totals.individual, function (spentMore) {
+					return spentMore.total;
+				});
+
+				locals.spentLess = _.min(locals.totals.individual, function (spentLess) {
+					return spentLess.total;
+				});
+
+				locals.difference = locals.spentMore.total - locals.spentLess.total;
+
 				next();
 			});
 	});

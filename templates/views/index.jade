@@ -57,9 +57,15 @@ block content
 							td(colspan='6'): p.text-center No expense items found.
 			.col-sm-4.col-sm-offset-8
 				table.table.table-striped
+					each userTotal in totals.individual
+						tr
+							td= userTotal.user
+							td= '$' + userTotal.total
 					tr
 						td: strong Total
-						td= '$' + total
-					tr
-						td: strong Split
-						td= '$' + (total / 2)
+						td= '$' + totals.all
+						
+	.container
+		.row
+			.col-xs-12
+				h2.text-center #{ spentLess.user } owes #{ spentMore.user } $#{ difference } 
