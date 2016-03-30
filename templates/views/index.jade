@@ -68,4 +68,7 @@ block content
 	.container
 		.row
 			.col-xs-12
-				h2.text-center #{ spentLess.user } owes #{ spentMore.user } $#{ difference } 
+				if spentLess && spentMore && spentMore != spentLess
+					h2.text-center #{ spentLess.user } owes #{ spentMore.user } $#{ difference } 
+				else
+					h2.text-center #{ spentMore.user } is owed $#{ totals.all }
