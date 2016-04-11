@@ -29,24 +29,17 @@ exports = module.exports = function(req, res) {
 				locals.totals = {
 					all: total,
 					individual: _.chain(expenses).groupBy('user').map(function (user, key) {
-						return {
-							user: key,
-							total: _.reduce(user, function (m, x) {
-								return m + x.cost;
-							}, 0)
-						};
-					}).value()
+							return {
+								user: key,
+								total: _.reduce(user, function (m, x) {
+									return Math.round((m + x.cost) * 100) / 100;
+								}, 0)
+							};
+						}).value()
 				};
 
-				locals.spentMore = _.max(locals.totals.individual, function (spentMore) {
-					return spentMore.total;
-				});
-
-				locals.spentLess = _.min(locals.totals.individual, function (spentLess) {
-					return spentLess.total;
-				});
-
-				locals.difference = locals.spentMore.total - locals.spentLess.total;
+				// Calculate individual share: total / number of users with expenses
+				locals.totals.share = Math.round((locals.totals.all / locals.totals.individual.length) * 100) / 100;
 
 				next();
 			});

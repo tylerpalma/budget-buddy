@@ -55,20 +55,28 @@ block content
 					else
 						tr
 							td(colspan='6'): p.text-center No expense items found.
+					tfoot
+						tr
+							td
+							td
+							td: strong Total
+							td= totals.all
+							td
+							td
+							td
+
 			.col-sm-4.col-sm-offset-8
 				table.table.table-striped
+					thead
+						tr
+							th Name
+							th Total Expenses
+							th Expense Share
+							th Balance
 					each userTotal in totals.individual
 						tr
 							td= userTotal.user
-							td= '$' + userTotal.total
-					tr
-						td: strong Total
-						td= '$' + totals.all
-						
-	.container
-		.row
-			.col-xs-12
-				if spentLess && spentMore && spentMore != spentLess
-					h2.text-center #{ spentLess.user } owes #{ spentMore.user } $#{ difference } 
-				else
-					h2.text-center #{ spentMore.user } is owed $#{ totals.all }
+							td= userTotal.total
+							td= ' - ' + totals.share
+							td= userTotal.total - totals.share
+
