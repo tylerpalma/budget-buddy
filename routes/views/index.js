@@ -42,7 +42,7 @@ exports = module.exports = function(req, res) {
 				locals.totals.share = Math.round((locals.totals.all / locals.totals.individual.length) * 100) / 100;
 
 				_.each(locals.totals.individual, function (individual) {
-					individual.balance = individual.total - locals.totals.share;
+					individual.balance = Math.round((individual.total - locals.totals.share) * 100) / 100;
 				});
 
 				next();
