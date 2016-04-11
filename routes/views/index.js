@@ -41,6 +41,10 @@ exports = module.exports = function(req, res) {
 				// Calculate individual share: total / number of users with expenses
 				locals.totals.share = Math.round((locals.totals.all / locals.totals.individual.length) * 100) / 100;
 
+				_.each(locals.totals.individual, function (individual) {
+					individual.balance = individual.total - locals.totals.share;
+				});
+
 				next();
 			});
 	});

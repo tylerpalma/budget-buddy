@@ -5879,6 +5879,12 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.red {
+  color: red; }
+
+.green {
+  color: green; }
+
 #header {
   margin-top: 30px; }
 

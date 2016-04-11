@@ -73,10 +73,14 @@ block content
 							th Total Expenses
 							th Expense Share
 							th Balance
-					each userTotal in totals.individual
+					each userTotal in totals.individual					
 						tr
 							td= userTotal.user
 							td= userTotal.total
 							td= ' - ' + totals.share
-							td= userTotal.total - totals.share
+							if userTotal.balance < 0 
+								td(class="red")= userTotal.balance
+							else
+								td(class="green")= userTotal.balance
+
 
