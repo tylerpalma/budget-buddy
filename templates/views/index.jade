@@ -29,7 +29,7 @@ block content
 	.container
 		.row
 			.col-xs-12
-				table.table.table-striped
+				table#expense-table.table.table-striped
 					thead
 						tr
 							th Name
@@ -38,23 +38,19 @@ block content
 							th Cost
 							th Date
 							th
-					if expenses.length > 0
-						each expense in expenses
+					tbody
+						if expenses.length > 0
+							tr(v-for='expense in expenses')
+								td(v-text='expense.user')
+								td(v-text='expense.store')
+								td(v-text='expense.memo')
+								td(v-text='"$" + expense.cost')
+								td(v-time='expense.createdAt')
+								td(v-if='expense.user == user.name.first')
+									button(v-on:click='deleteExpense(expense._id)').btn-delete: i.fa.fa-trash
+						else
 							tr
-								td= expense.user
-								td= expense.store
-								td= expense.memo
-								td= '$' + expense.cost
-								td= expense._.createdAt.format('MMM Do h:mm a')
-								td
-									if expense.user == user.name.first
-										form(method="post")
-											input(type="hidden" name='action', value='removeExpense')
-											input(type="hidden" name='removeId' value="#{ expense._id }")
-											button(type="submit").btn-delete: i.fa.fa-trash
-					else
-						tr
-							td(colspan='6'): p.text-center No expense items found.
+								td(colspan='6'): p.text-center No expense items found.
 					tfoot
 						tr
 							td
@@ -70,7 +66,7 @@ block content
 					thead
 						tr
 							th Name
-							th Total Expenses
+							th Expense Total
 							th Expense Share
 							th Balance
 					each userTotal in totals.individual					
@@ -83,4 +79,8 @@ block content
 							else
 								td(class="green")= userTotal.balance
 
-
+block js
+	script.
+		window.BUDGETBUDDY = window.BUDGETBUDDY || {};
+		window.BUDGETBUDDY.data = window.BUDGETBUDDY.data || {};
+		window.BUDGETBUDDY.data.userId = "#{user._id}" || {};

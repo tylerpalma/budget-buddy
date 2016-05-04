@@ -19,6 +19,7 @@
  */
 
 var keystone = require('keystone');
+var restful = require('restful-keystone')(keystone);
 var middleware = require('./middleware');
 var importRoutes = keystone.importer(__dirname);
 
@@ -36,6 +37,22 @@ exports = module.exports = function(app) {
 
 	// Views
 	app.all('/', middleware.requireUser, routes.views.index);
+
+	// API Endpoints
+	restful.expose({
+		Expense: {
+			methods: ['list','retrieve', 'remove']
+		},
+		User: {
+			methods: ['retrieve'],
+			show: ['name', 'email', 'isAdmin']
+		}
+	}).before({
+		Expense: {
+			retrieve: middleware.requireUser,
+			remove: middleware.requireUser
+		}
+	}).start();
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);

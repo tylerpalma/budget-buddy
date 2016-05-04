@@ -3,6 +3,11 @@ var jshint = require('gulp-jshint');
 var jshintReporter = require('jshint-stylish');
 var watch = require('gulp-watch');
 var shell = require('gulp-shell')
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var sourcemaps = require('gulp-sourcemaps');
+var gutil = require('gulp-util');
+var browserify = require('browserify');
 
 var sass = require('gulp-sass');
 
@@ -18,6 +23,8 @@ var paths = {
 
 };
 
+var b = browserify({entries: ['./public/js/src/main.js']});
+
 // gulp lint
 gulp.task('lint', function(){
 	gulp.src(paths.src)
@@ -30,6 +37,19 @@ gulp.task('watch:lint', function () {
 	gulp.watch(paths.src, ['lint']);
 });
 
+gulp.task('watch:js', function () {
+	gulp.watch('./public/js/src/**/*.js', ['js']);
+});
+
+gulp.task('js', function() {
+	return b.bundle()
+		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.pipe(source('bundle.js'))
+		.pipe(buffer())
+		.pipe(sourcemaps.init({ loadMaps: true }))
+		.pipe(sourcemaps.write('./'))
+		.pipe(gulp.dest('./public/js'));
+});
 
 gulp.task('watch:sass', function () {
 	gulp.watch(paths.style.all, ['sass']);
@@ -47,7 +67,9 @@ gulp.task('watch', [
 
   'watch:sass',
 
-  'watch:lint'
+  'watch:lint',
+
+	'watch:js'
 ]);
 
 gulp.task('default', ['watch', 'runKeystone']);
